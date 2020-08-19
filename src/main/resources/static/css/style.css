@@ -1,7 +1,7 @@
 /*
  *
  *   H+ - 后台主题UI框架
- *   version 4.9
+ *   version 4.0
  *
 */
 
@@ -3710,7 +3710,7 @@ nav.page-tabs .page-tabs-content {
     width: 80px;
 }
 
-.roll-right.J_tabExit {
+.roll-right.J_tabExit, .roll-right.tabReload {
     background: #fff;
     height: 40px;
     width: 60px;
@@ -4818,8 +4818,8 @@ body.modal-open {
 
 .logo-name {
     color: #e6e6e6;
-    font-size: 50px;
-    font-weight: 20;
+    font-size: 180px;
+    font-weight: 800;
     letter-spacing: -10px;
     margin-bottom: 0px;
 }

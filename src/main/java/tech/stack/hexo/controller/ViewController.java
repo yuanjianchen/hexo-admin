@@ -21,7 +21,12 @@ public class ViewController {
   }
 
   @GetMapping("config")
-  public String config(){
+  public String config() {
     return "config";
+  }
+
+  @GetMapping("articles")
+  public String articles() {
+    return "articleManager";
   }
 }
