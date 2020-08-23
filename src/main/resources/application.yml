@@ -6,7 +6,23 @@ spring:
     url: jdbc:mysql://127.0.0.1/hexo-admin
   thymeleaf:
     cache: false
-    mode: HTML5
+    mode: HTML
     encoding: UTF-8
+  jpa:
+    show-sql: true
 
 
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "httptrace,shutdown"
+        ## 健康检查根路径
+      base-path: "/actuator"
+  endpoint:
+    shutdown:
+      enabled: true
+    health:
+      show-details: always
+server:
+  port: 8080

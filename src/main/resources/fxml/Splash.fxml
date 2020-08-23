@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.paint.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.image.*?>
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<StackPane fx:id="rootPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="400.0" minWidth="600.0" prefHeight="400.0"
+           prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
+           fx:controller="tech.stack.hexo.fxml.SplashController">
+    <children>
+        <ImageView fitHeight="400.0" fitWidth="825.0" pickOnBounds="true" preserveRatio="true">
+            <image>
+                <Image url="@../images/aa.jpeg"/>
+            </image>
+        </ImageView>
+        <Pane prefHeight="200.0" prefWidth="200.0">
+            <children>
+                <Text fill="#383636e0" layoutX="196.0" layoutY="212.0" strokeType="OUTSIDE" strokeWidth="0.0"
+                      text="Hexo-Admin">
+                    <font>
+                        <Font name="JetBrains Mono Variable" size="36.0"/>
+                    </font>
+                </Text>
+            </children>
+        </Pane>
+    </children>
+</StackPane>

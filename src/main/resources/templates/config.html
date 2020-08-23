@@ -9,61 +9,102 @@
 <div class="wrapper wrapper-content animated fadeInRight">
     <div class="ibox float-e-margins">
         <div class="ibox-title">
-            <h5>基本配置 <small>简单登录表单示例</small></h5>
+            <h5 th:text="${blogConfig.name}">已有博客 <small></small></h5>
             <div class="ibox-tools">
                 <a class="collapse-link">
                     <i class="fa fa-chevron-up"></i>
                 </a>
-                <a class="dropdown-toggle" data-toggle="dropdown" href="form_basic.html#">
-                    <i class="fa fa-wrench"></i>
-                </a>
-                <ul class="dropdown-menu dropdown-user">
-                    <li><a href="form_basic.html#">选项1</a>
-                    </li>
-                    <li><a href="form_basic.html#">选项2</a>
-                    </li>
-                </ul>
-                <a class="close-link">
-                    <i class="fa fa-times"></i>
-                </a>
             </div>
         </div>
         <div class="ibox-content">
-            <div class="row">
-                <div class="col-sm-6 b-r">
-                    <h3 class="m-t-none m-b">登录</h3>
-                    <p>欢迎登录本站(⊙o⊙)</p>
-                    <form role="form">
-                        <div class="form-group">
-                            <label>用户名</label>
-                            <input type="email" placeholder="请输入您注册的E-mail" class="form-control">
-                        </div>
-                        <div class="form-group">
-                            <label>密码</label>
-                            <input type="password" placeholder="请输入密码" class="form-control">
-                        </div>
-                        <div>
-                            <button class="btn btn-sm btn-primary pull-right m-t-n-xs" type="submit"><strong>登
-                                录</strong>
-                            </button>
-                            <label>
-                                <input type="checkbox" class="i-checks">自动登录</label>
-                        </div>
-                    </form>
+            <!--/*@thymesVar id="blogConfig" type="tech.stack.hexo.domain.BlogConfig"*/-->
+            <form class="form-horizontal" th:object="${blogConfig}" id="blogConfig">
+                <input type="hidden" th:field="*{id}">
+                <div class="form-group">
+                    <label class="col-sm-1 control-label">路径配置：</label>
+                    <div class="col-sm-11">
+                        <input th:field="*{filePath}" type="text"
+                               placeholder="请填写已有博客路径" class="form-control">
+                    </div>
                 </div>
-                <div class="col-sm-6">
-                    <h4>还不是会员？</h4>
-                    <p>您可以注册一个新账户</p>
-                    <p class="text-center">
-                        <a href="form_basic.html"><i class="fa fa-sign-in big-icon"></i></a>
-                    </p>
+                <div class="form-group">
+                    <label class="col-sm-1 control-label">远程仓库：</label>
+                    <div class="col-sm-11">
+                        <input th:field="*{remoteUrl}" type="text" placeholder="请填写远程仓库地址"
+                               class="form-control">
+                    </div>
                 </div>
-            </div>
+                <div class="form-group">
+                    <label class="col-sm-1 control-label">博文路径：</label>
+                    <div class="col-sm-11">
+                        <input th:field="*{sourcePath}" type="text" placeholder="博文路径,不填将使用默认路径"
+                               class="form-control">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-1 control-label">博文仓库：</label>
+                    <div class="col-sm-11">
+                        <input th:field="*{sourceRemoteUrl}" type="text" placeholder="博文路径,不填将使用默认路径"
+                               class="form-control">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-12">
+                        <button class="btn btn-sm btn-info" type="button" onclick="enableForm('blogConfig')">编辑</button>
+                        <button class="btn btn-sm btn-danger" type="button" id="save">保存</button>
+                        <button class="btn btn-sm btn-primary" type="button" id="initBlog"
+                                th:text="*{initialized}?'更新':'初始化'">初始化
+                        </button>
+                    </div>
+                </div>
+            </form>
         </div>
     </div>
 </div>
 <div th:include="component/head::script"/>
 <!-- 自定义js -->
 <script src="js/content.js?v=1.0.0"></script>
+<script type="text/javascript">
+
+
+    $(document).ready(function () {
+        disableForm('blogConfig')
+        $("#save").click(function () {
+            let $filePath = $("#filePath");
+            if ($filePath.attr("disabled")) {
+                return
+            }
+            let blogPath = $filePath.val()
+            if (!blogPath) {
+                layer.msg("请填写博客路径")
+                return
+            }
+            $.ajax({
+                url: '/config/save',
+                type: 'POST',
+                data: formJson('blogConfig'),
+                dataType: 'json',
+                contentType: 'application/json',
+                success: function (res) {
+                    layer.msg(res.message)
+                    if (res.success) {
+                        window.location.reload()
+                    }
+                }
+            })
+        })
+        $("#initBlog").click(function () {
+            let id = $("#id").val()
+            let data = "id=" + id
+            $.post("/config/init", data, function (res) {
+                if (res.success) {
+                    window.location.reload()
+                }
+            })
+        })
+    })
+
+
+</script>
 </body>
 </html>

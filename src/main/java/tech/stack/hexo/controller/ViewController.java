@@ -1,7 +1,11 @@
 package tech.stack.hexo.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import tech.stack.hexo.service.BlogConfigService;
+import tech.stack.hexo.service.PageInitService;
 
 /**
  * @author jianyuan.chen
@@ -9,6 +13,12 @@ import org.springframework.web.bind.annotation.GetMapping;
  */
 @Controller
 public class ViewController {
+
+  private final PageInitService pageInitService;
+
+  public ViewController(PageInitService pageInitService) {
+    this.pageInitService = pageInitService;
+  }
 
   @GetMapping("index")
   public String index() {
@@ -21,7 +31,8 @@ public class ViewController {
   }
 
   @GetMapping("config")
-  public String config() {
+  public String config(Model model) {
+    model.addAttribute("blogConfig", pageInitService.initConfigPage());
     return "config";
   }
 
