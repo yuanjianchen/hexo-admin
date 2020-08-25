@@ -161,9 +161,9 @@ $(function () {
 
     $('#treeview5').treeview({
         color: "#428bca",
-        expandIcon: 'glyphicon glyphicon-chevron-right',
-        collapseIcon: 'glyphicon glyphicon-chevron-down',
-        nodeIcon: 'glyphicon glyphicon-bookmark',
+        expandIcon: 'glyphicon glyphicon-folder-open',
+        collapseIcon: 'glyphicon glyphicon-folder-close',
+        nodeIcon: 'glyphicon glyphicon-file',
         data: defaultData
     });
 

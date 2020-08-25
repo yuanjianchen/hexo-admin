@@ -1,10 +1,9 @@
 package tech.stack.hexo.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import tech.stack.hexo.service.BlogConfigService;
+import org.springframework.web.bind.annotation.PathVariable;
 import tech.stack.hexo.service.PageInitService;
 
 /**
@@ -39,5 +38,11 @@ public class ViewController {
   @GetMapping("articles")
   public String articles() {
     return "articleManager";
+  }
+
+  @GetMapping("blog/{id}/source")
+  public String blogSource(@PathVariable int id, Model model) {
+    model.addAttribute("configId", id);
+    return "blogSource";
   }
 }

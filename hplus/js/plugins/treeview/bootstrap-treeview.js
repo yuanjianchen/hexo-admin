@@ -291,6 +291,7 @@
 				}
 
 				// Add node icon
+
 				treeItem
 					.append($(self._template.iconWrapper)
 						.append($(self._template.icon)

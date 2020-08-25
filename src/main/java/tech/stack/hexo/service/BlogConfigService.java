@@ -1,8 +1,10 @@
 package tech.stack.hexo.service;
 
 import tech.stack.hexo.domain.BlogConfig;
+import tech.stack.hexo.model.vo.MenuVO;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author chenjianyuan
@@ -26,4 +28,8 @@ public interface BlogConfigService {
     void save(int id, String filePath, String remoteUrl);
 
     void initBlog(int id);
+
+    List<MenuVO> menus();
+
+    Optional<BlogConfig> findById(int id);
 }

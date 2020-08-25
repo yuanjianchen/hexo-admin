@@ -98,6 +98,7 @@
             let data = "id=" + id
             $.post("/config/init", data, function (res) {
                 if (res.success) {
+                    window.parent.loadMenu()
                     window.location.reload()
                 }
             })

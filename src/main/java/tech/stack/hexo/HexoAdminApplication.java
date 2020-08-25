@@ -12,14 +12,13 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 @SpringBootApplication
 public class HexoAdminApplication {
 
-
     public static void main(String[] args) {
         System.setProperty("java.awt.headless", "false");
         new Thread(() -> {
             SpringApplication.run(HexoAdminApplication.class, args);
             App.flag = false;
         }).start();
-        LauncherImpl.launchApplication(App.class, AppPreloader.class, args);
+//        LauncherImpl.launchApplication(App.class, AppPreloader.class, args);
 
     }
 

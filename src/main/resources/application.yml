@@ -10,6 +10,8 @@ spring:
     encoding: UTF-8
   jpa:
     show-sql: true
+  jackson:
+    default-property-inclusion: non_null
 
 
 management:

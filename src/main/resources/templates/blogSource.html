@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>文章源文件管理</title>
+    <link rel="stylesheet" th:include="component/head::head"/>
+    <link href="/css/plugins/treeview/bootstrap-treeview.css" rel="stylesheet">
+    <style type="text/css">
+        .text-center{
+            text-align: unset;
+        }
+        .fileTree{
+            border-right: 1px solid #f3f3f4;
+        }
+        #treeFile{
+            overflow: auto;
+            white-space:nowrap;
+        }
+        #treeFile::-webkit-scrollbar{
+            height: 4px;
+        }
+        #treeFile::-webkit-scrollbar-thumb {
+            background: grey;
+        }
+        .list-group-item{
+            border: none;
+        }
+    </style>
+</head>
+<body class="gray-bg">
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="ibox float-e-margins">
+        <div class="ibox-content text-center p-md">
+            <div class="row">
+                <div class="col-sm-3 fileTree">
+                    <div id="treeFile" th:value="${configId}" class="test"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div th:include="component/head::script"/>
+<script src="/js/plugins/treeview/bootstrap-treeview.js"></script>
+<script type="text/javascript">
+    $(function () {
+        const blogId = $('#treeFile').attr('value')
+        $.get("/blog/" + blogId + "/source/post", function (res) {
+            if (res.success) {
+                $('#treeFile').treeview({
+                    showTags: true,
+                    collapseIcon: 'glyphicon glyphicon-folder-open',
+                    expandIcon: 'glyphicon glyphicon-folder-close',
+                    // nodeIcon: 'glyphicon glyphicon-file',
+                    levels:1,
+                    data: res.data
+                });
+            }
+        })
+
+        $('#treeFile').on('nodeSelected', function(event, data) {
+            $('#treeFile').treeview('expandNode', [ data, { silent: true } ]);
+        });
+    })
+</script>
+</body>
+</html>

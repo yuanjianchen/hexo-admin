@@ -108,6 +108,7 @@
 
     $.fn[pluginName] = function(options) {
         this.each(function () {
+            // $.removeData(this);
             var el = $(this);
             if (el.data(pluginName)) {
                 el.data(pluginName).remove();

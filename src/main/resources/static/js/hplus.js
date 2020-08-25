@@ -6,8 +6,9 @@
 $(document).ready(function () {
 
     // MetsiMenu
-    $('#side-menu').metisMenu();
 
+    // $('#side-menu').metisMenu();
+    loadMenu()
     // 打开右侧边栏
     $('.right-sidebar-toggle').click(function () {
         $('#right-sidebar').toggleClass('sidebar-open');
@@ -84,11 +85,16 @@ $(document).ready(function () {
         height: '100%'
     });
 
-    $('#side-menu>li').click(function () {
+    $(document).on('click', '#side-menu>li', function(){
         if ($('body').hasClass('mini-navbar')) {
             NavToggle();
         }
     });
+    // $('#side-menu>li').click(function () {
+    //     if ($('body').hasClass('mini-navbar')) {
+    //         NavToggle();
+    //     }
+    // });
     $('#side-menu>li li a').click(function () {
         if ($(window).width() < 769) {
             NavToggle();
@@ -110,6 +116,46 @@ $(window).bind("load resize", function () {
         $('.navbar-static-side').fadeIn();
     }
 });
+
+function loadMenu() {
+    $.get("/config/menus", function (res) {
+        $('li').remove('.hexo-blogs')
+        if (!res.success) {
+            return
+        }
+        let blogs = res.data
+        let html = ""
+        $.each(blogs, function (i, blog) {
+            html += '<li class="hexo-blogs">'
+            html += '<a href="#" aria-expanded="false"><i class="fa fa-server"></i> <span class="nav-label">' + blog.name + '</span> <span class="fa arrow"></span></a>'
+            if (blog.children.length > 0) {
+                let blogMenus = blog.children
+                html += '<ul class="nav nav-second-level">'
+                $.each(blogMenus, function (i, blogMenu) {
+                    if (blogMenu.children.length > 0) {
+                        let themeMenus = blogMenu.children
+                        html += '<li>'
+                        html += '<a class="has-arrow" href="#" aria-expanded="false">' + blogMenu.name + ' <span class="fa arrow"></span></a>'
+                        html += '<ul class="nav nav-third-level">'
+                        $.each(themeMenus, function (i, themeMenu) {
+                            html += '<li><a class="J_menuItem" href="' + themeMenu.url + '">' + themeMenu.name + '</a></li>'
+                        })
+                        html += '</ul>'
+                        html += '</li>'
+                    } else {
+                        html += ' <li><a class="J_menuItem" href="' + blogMenu.url + '">' + blogMenu.name + '</a></li>'
+                    }
+                })
+                html += '</ul>'
+            }
+            html += '</li>'
+        })
+        // $('#side-menu').metisMenu('dispose');
+        $("#homeMenu").after(html);
+
+        $('#side-menu').metisMenu();
+    })
+}
 
 function NavToggle() {
     $('.navbar-minimalize').trigger('click');

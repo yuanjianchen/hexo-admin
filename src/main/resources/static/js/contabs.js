@@ -154,8 +154,8 @@ $(function () {
         }
         return false;
     }
-
-    $('.J_menuItem').on('click', menuItem);
+    $(document).on('click', '.J_menuItem', menuItem);
+    // $('.J_menuItem').on('click', menuItem);
 
     // 关闭选项卡菜单
     function closeTab() {

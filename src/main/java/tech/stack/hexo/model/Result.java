@@ -40,6 +40,14 @@ public class Result<T> {
         return result;
     }
 
+    public static <T> Result<T> ok(T data) {
+        Result<T> result = new Result<>();
+        result.code = 0;
+        result.message = "success";
+        result.data = data;
+        return result;
+    }
+
     public static Result<Void> err() {
         Result<Void> result = new Result<>();
         result.code = -1;

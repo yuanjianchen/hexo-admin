@@ -4,7 +4,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import tech.stack.hexo.domain.BlogConfig;
 import tech.stack.hexo.model.Result;
+import tech.stack.hexo.model.vo.MenuVO;
 import tech.stack.hexo.service.BlogConfigService;
+
+import java.util.List;
 
 /**
  * @author chenjianyuan
@@ -12,7 +15,7 @@ import tech.stack.hexo.service.BlogConfigService;
  */
 @RestController
 @RequestMapping("/config")
-public class ConfigController {
+public class SysConfigController {
 
     @Autowired
     private BlogConfigService blogConfigService;
@@ -30,9 +33,8 @@ public class ConfigController {
     }
 
     @GetMapping("menus")
-    public Result<Void> menuList() {
-
-        return Result.ok();
+    public Result<List<MenuVO>> menuList() {
+        return Result.ok(blogConfigService.menus());
     }
 
 }
