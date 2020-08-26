@@ -1,6 +1,5 @@
 package tech.stack.hexo.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,11 +18,19 @@ import java.util.List;
 @RequestMapping("/blog")
 public class BlogController {
 
-    @Autowired
-    private BlogService blogService;
+  private final BlogService blogService;
 
-    @GetMapping("/{id}/source/post")
-    public Result<List<FileTreeVO>> files(@PathVariable int id){
-        return Result.ok(blogService.listPosts(id));
-    }
+  public BlogController(BlogService blogService) {
+    this.blogService = blogService;
+  }
+
+  @GetMapping("/{id}/source/post")
+  public Result<List<FileTreeVO>> files(@PathVariable int id) {
+    return Result.ok(blogService.listPosts(id));
+  }
+
+  @GetMapping("{id}/source/post/{fileName}")
+  public Result<String> fileContent(@PathVariable int id, @PathVariable String fileName) {
+      return Result.ok(blogService.getFileContent(id, fileName));
+  }
 }

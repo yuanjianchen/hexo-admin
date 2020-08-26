@@ -30,10 +30,25 @@ public class BlogServiceImpl implements BlogService {
 
   @Override
   public List<FileTreeVO> listPosts(int id) {
-    BlogConfig config = blogConfigService.findById(id).orElseThrow(NoSuchResException::new);
+    BlogConfig config = blogConfigService.findById(id);
     String sourcePath = config.getSourcePath();
     File file = new File(sourcePath);
-    return listPosts(file);
+    FileTreeVO vo = new FileTreeVO(file.getName());
+    vo.setIcon("fa fa-folder-open-o");
+    vo.setChildren(listPosts(file));
+    vo.open();
+    return new ArrayList<FileTreeVO>() {
+      {
+        add(vo);
+      }
+    };
+  }
+
+  @Override
+  public String getFileContent(int id, String fileName) {
+    BlogConfig blogConfig = blogConfigService.findById(id);
+    String sourcePath = blogConfig.getSourcePath();
+    return null;
   }
 
   private List<FileTreeVO> listPosts(File file) {
@@ -47,16 +62,10 @@ public class BlogServiceImpl implements BlogService {
             f -> {
               FileTreeVO vo = new FileTreeVO(f.getName());
               if (f.isDirectory()) {
-                vo.setNodes(listPosts(f));
-                vo.setTags(
-                    new ArrayList<Integer>() {
-                      {
-                        File[] children = f.listFiles();
-                        add(children == null ? 0 : children.length);
-                      }
-                    });
+                vo.setChildren(listPosts(f));
+                vo.setIcon("fa fa-folder-o");
               } else {
-                vo.setIcon("glyphicon glyphicon-file");
+                vo.setIcon("fa fa-file-o");
               }
               return vo;
             })

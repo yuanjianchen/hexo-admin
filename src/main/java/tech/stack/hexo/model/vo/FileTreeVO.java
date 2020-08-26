@@ -12,11 +12,11 @@ import java.util.List;
  */
 @Data
 public class FileTreeVO {
+  private Integer id;
   private String text;
-  private List<Integer> tags;
   private String icon;
-  private NodeState state = new NodeState();
-  private List<FileTreeVO> nodes;
+  private NodeState state;
+  private List<FileTreeVO> children;
 
   public FileTreeVO(String text) {
     this.text = text;
@@ -24,19 +24,25 @@ public class FileTreeVO {
 
   public FileTreeVO() {}
 
-  public FileTreeVO addNode(FileTreeVO vo) {
-    if (CollectionUtils.isEmpty(this.nodes)) {
-      this.nodes = new ArrayList<>();
+  public FileTreeVO addChild(FileTreeVO vo) {
+    if (CollectionUtils.isEmpty(this.children)) {
+      this.children = new ArrayList<>();
     }
-    this.nodes.add(vo);
+    this.children.add(vo);
     return this;
   }
 
   @Data
   public static class NodeState {
-    private boolean checked;
-    private boolean disabled;
-    private boolean expanded;
+    private boolean opened;
     private boolean selected;
+    private boolean disabled;
+  }
+
+  public void open(){
+    if(this.state == null){
+      this.state = new NodeState();
+    }
+    this.state.setOpened(true);
   }
 }

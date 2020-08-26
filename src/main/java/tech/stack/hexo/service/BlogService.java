@@ -10,4 +10,7 @@ import java.util.List;
  */
 public interface BlogService {
     List<FileTreeVO> listPosts(int id);
+
+    String getFileContent(int id, String fileName);
+
 }

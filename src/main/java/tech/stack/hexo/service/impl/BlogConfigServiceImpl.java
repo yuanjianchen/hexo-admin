@@ -120,8 +120,8 @@ public class BlogConfigServiceImpl implements BlogConfigService {
   }
 
     @Override
-    public Optional<BlogConfig> findById(int id) {
-        return repository.findById(id);
+    public BlogConfig findById(int id) {
+        return repository.findById(id).orElseThrow(NoSuchResException::new);
     }
 
     private String initGitRemoteUrl(String filePath) {

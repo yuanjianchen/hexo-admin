@@ -4,26 +4,31 @@
     <meta charset="UTF-8">
     <title>文章源文件管理</title>
     <link rel="stylesheet" th:include="component/head::head"/>
-    <link href="/css/plugins/treeview/bootstrap-treeview.css" rel="stylesheet">
+    <link href="/css/plugins/jsTree/style.min.css" rel="stylesheet">
     <style type="text/css">
-        .text-center{
+        .text-center {
             text-align: unset;
         }
-        .fileTree{
+
+        .fileTree {
             border-right: 1px solid #f3f3f4;
         }
-        #treeFile{
+
+        #treeFile {
             overflow: auto;
-            white-space:nowrap;
+            white-space: nowrap;
         }
-        #treeFile::-webkit-scrollbar{
-            height: 4px;
+
+        #treeFile::-webkit-scrollbar {
+            height: 6px;
         }
+
         #treeFile::-webkit-scrollbar-thumb {
             background: grey;
         }
-        .list-group-item{
-            border: none;
+        .wrapper,.ibox,.ibox-content,.row,.fileTree{
+            height: 100%;
+            overflow: auto;
         }
     </style>
 </head>
@@ -40,25 +45,34 @@
     </div>
 </div>
 <div th:include="component/head::script"/>
-<script src="/js/plugins/treeview/bootstrap-treeview.js"></script>
+<script src="/js/plugins/jsTree/jstree.min.js"></script>
 <script type="text/javascript">
     $(function () {
         const blogId = $('#treeFile').attr('value')
         $.get("/blog/" + blogId + "/source/post", function (res) {
             if (res.success) {
-                $('#treeFile').treeview({
-                    showTags: true,
-                    collapseIcon: 'glyphicon glyphicon-folder-open',
-                    expandIcon: 'glyphicon glyphicon-folder-close',
-                    // nodeIcon: 'glyphicon glyphicon-file',
-                    levels:1,
-                    data: res.data
+                $('#treeFile').jstree({
+                    'core': {
+                        'data': res.data
+                    }
                 });
             }
         })
-
-        $('#treeFile').on('nodeSelected', function(event, data) {
-            $('#treeFile').treeview('expandNode', [ data, { silent: true } ]);
+        $('#treeFile').on("select_node.jstree", function (e, data) {
+            $('#treeFile').jstree('toggle_node', data.selected)
+            console.log(data)
+            if(!data.node.children.length > 0){
+               let path =  $('#treeFile').jstree('get_path',data.selected, '/')
+                console.log(path)
+                return
+            }
+            if (data.node.state.opened) {
+                $('#' + data.node.a_attr.id).find('i').removeClass('fa-folder-o')
+                $('#' + data.node.a_attr.id).find('i').addClass('fa-folder-open-o')
+            } else {
+                $('#' + data.node.a_attr.id).find('i').removeClass('fa-folder-open-o')
+                $('#' + data.node.a_attr.id).find('i').addClass('fa-folder-o')
+            }
         });
     })
 </script>
