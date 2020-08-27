@@ -1,16 +1,7 @@
 package tech.stack.hexo.util;
 
-import javax.net.ssl.HostnameVerifier;
-import javax.net.ssl.HttpsURLConnection;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLSession;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.X509TrustManager;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import javax.net.ssl.*;
+import java.io.*;
 import java.net.ConnectException;
 import java.net.SocketTimeoutException;
 import java.net.URL;
@@ -29,8 +20,8 @@ public class HttpUtils {
      * 功能描述:
      * 〈发送get请求,请求参数格式是 name1=value1&name2=value2 的形式。〉
      *
-     * @params : [url, param]
      * @return : java.lang.String
+     * @params : [url, param]
      * @author : cwl
      * @date : 2019/10/17 15:53
      */
@@ -79,8 +70,8 @@ public class HttpUtils {
      * 功能描述:
      * 〈发送post请求,请求参数格式是 name1=value1&name2=value2 的形式。〉
      *
-     * @params : [url, param]
      * @return : java.lang.String
+     * @params : [url, param]
      * @author : cwl
      * @date : 2019/10/17 15:54
      */
@@ -139,8 +130,8 @@ public class HttpUtils {
      * 功能描述:
      * 〈发送SSL方式的Post方法 请求参数格式是 name1=value1&name2=value2 的形式〉
      *
-     * @params : [url, param]
      * @return : java.lang.String
+     * @params : [url, param]
      * @author : cwl
      * @date : 2019/10/17 16:00
      */

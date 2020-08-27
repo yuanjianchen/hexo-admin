@@ -11,9 +11,10 @@ import java.util.Optional;
  * @date 2020/8/21 23:22:13
  */
 @Repository
-public interface BlogConfigRepository extends JpaRepository<BlogConfig,Integer> {
+public interface BlogConfigRepository extends JpaRepository<BlogConfig, Integer> {
     /**
      * 根据博客地址查询
+     *
      * @param blogPath 博客路径
      * @return 博客配置
      */

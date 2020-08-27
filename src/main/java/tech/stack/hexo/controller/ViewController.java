@@ -13,36 +13,36 @@ import tech.stack.hexo.service.PageInitService;
 @Controller
 public class ViewController {
 
-  private final PageInitService pageInitService;
+    private final PageInitService pageInitService;
 
-  public ViewController(PageInitService pageInitService) {
-    this.pageInitService = pageInitService;
-  }
+    public ViewController(PageInitService pageInitService) {
+        this.pageInitService = pageInitService;
+    }
 
-  @GetMapping("index")
-  public String index() {
-    return "index";
-  }
+    @GetMapping("index")
+    public String index() {
+        return "index";
+    }
 
-  @GetMapping("home")
-  public String home() {
-    return "home";
-  }
+    @GetMapping("home")
+    public String home() {
+        return "home";
+    }
 
-  @GetMapping("config")
-  public String config(Model model) {
-    model.addAttribute("blogConfig", pageInitService.initConfigPage());
-    return "config";
-  }
+    @GetMapping("config")
+    public String config(Model model) {
+        model.addAttribute("blogConfig", pageInitService.initConfigPage());
+        return "config";
+    }
 
-  @GetMapping("articles")
-  public String articles() {
-    return "articleManager";
-  }
+    @GetMapping("articles")
+    public String articles() {
+        return "articleManager";
+    }
 
-  @GetMapping("blog/{id}/source")
-  public String blogSource(@PathVariable int id, Model model) {
-    model.addAttribute("configId", id);
-    return "blogSource";
-  }
+    @GetMapping("blog/{id}/source")
+    public String blogSource(@PathVariable int id, Model model) {
+        model.addAttribute("configId", id);
+        return "blogSource";
+    }
 }

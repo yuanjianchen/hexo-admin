@@ -20,7 +20,7 @@ public class PageInitServiceImpl implements PageInitService {
     @Override
     public BlogConfig initConfigPage() {
         List<BlogConfig> configs = blogConfigService.findAll();
-        if (configs.size() >0){
+        if (configs.size() > 0) {
             return configs.get(0);
         }
         return new BlogConfig();

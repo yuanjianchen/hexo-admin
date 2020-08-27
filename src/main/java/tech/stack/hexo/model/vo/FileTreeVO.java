@@ -12,37 +12,38 @@ import java.util.List;
  */
 @Data
 public class FileTreeVO {
-  private Integer id;
-  private String text;
-  private String icon;
-  private NodeState state;
-  private List<FileTreeVO> children;
+    private Integer id;
+    private String text;
+    private String icon;
+    private NodeState state;
+    private List<FileTreeVO> children;
 
-  public FileTreeVO(String text) {
-    this.text = text;
-  }
-
-  public FileTreeVO() {}
-
-  public FileTreeVO addChild(FileTreeVO vo) {
-    if (CollectionUtils.isEmpty(this.children)) {
-      this.children = new ArrayList<>();
+    public FileTreeVO(String text) {
+        this.text = text;
     }
-    this.children.add(vo);
-    return this;
-  }
 
-  @Data
-  public static class NodeState {
-    private boolean opened;
-    private boolean selected;
-    private boolean disabled;
-  }
-
-  public void open(){
-    if(this.state == null){
-      this.state = new NodeState();
+    public FileTreeVO() {
     }
-    this.state.setOpened(true);
-  }
+
+    public FileTreeVO addChild(FileTreeVO vo) {
+        if (CollectionUtils.isEmpty(this.children)) {
+            this.children = new ArrayList<>();
+        }
+        this.children.add(vo);
+        return this;
+    }
+
+    public void open() {
+        if (this.state == null) {
+            this.state = new NodeState();
+        }
+        this.state.setOpened(true);
+    }
+
+    @Data
+    public static class NodeState {
+        private boolean opened;
+        private boolean selected;
+        private boolean disabled;
+    }
 }

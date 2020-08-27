@@ -4,7 +4,7 @@ package tech.stack.hexo.core.exception;
  * @author chenjianyuan
  * @date 2020/8/22 12:34:55
  */
-public class AdminException extends RuntimeException{
+public class AdminException extends RuntimeException {
     public AdminException() {
     }
 

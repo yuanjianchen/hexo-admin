@@ -9,7 +9,7 @@ import java.util.List;
  * @author chenjianyuan
  * @date 2020/8/23 02:33:17
  */
-public class ShellExecResultListOutputStream  extends LogOutputStream {
+public class ShellExecResultListOutputStream extends LogOutputStream {
     private final List<String> lines = new LinkedList<>();
 
     @Override

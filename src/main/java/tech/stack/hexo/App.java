@@ -10,6 +10,11 @@ import tech.stack.hexo.util.HttpUtils;
 public class App extends Application {
 
     public static volatile boolean flag = true;
+
+    public static void main(String[] args) {
+        launch(args);
+    }
+
     @Override
     public void init() throws Exception {
         super.init();
@@ -34,10 +39,6 @@ public class App extends Application {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    public static void main(String[] args) {
-        launch(args);
     }
 
 }

@@ -25,7 +25,7 @@ public class MenuVO {
         this.children = new ArrayList<>();
     }
 
-    public MenuVO addChild(MenuVO vo){
+    public MenuVO addChild(MenuVO vo) {
         this.getChildren().add(vo);
         return this;
     }

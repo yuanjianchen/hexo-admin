@@ -20,104 +20,97 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-/** @author chenjianyuan */
+/**
+ * @author chenjianyuan
+ */
 @Service
 public class BlogConfigServiceImpl implements BlogConfigService {
 
-  private final BlogConfigRepository repository;
+    private final BlogConfigRepository repository;
 
-  public BlogConfigServiceImpl(BlogConfigRepository repository) {
-    this.repository = repository;
-  }
-
-  @Override
-  public BlogConfig findByBlogPath(String blogPath) {
-    return repository.findByFilePath(blogPath).orElse(null);
-  }
-
-  @Override
-  public void save(BlogConfig blogConfig) {
-    Optional<BlogConfig> configOpt = repository.findByFilePath(blogConfig.getFilePath());
-    if (configOpt.isPresent() && configOpt.get().getId() != blogConfig.getId()) {
-      throw new ResExistedException(blogConfig.getFilePath().concat("已经存在"));
+    public BlogConfigServiceImpl(BlogConfigRepository repository) {
+        this.repository = repository;
     }
-    BlogConfig config = repository.findById(blogConfig.getId()).orElse(blogConfig);
-    config.setFilePath(blogConfig.getFilePath());
-    config.setRemoteUrl(blogConfig.getRemoteUrl());
-    config.setSourcePath(blogConfig.getSourcePath());
-    repository.save(config);
-  }
 
-  @Override
-  public List<BlogConfig> findAll() {
-    return repository.findAll();
-  }
-
-  @Override
-  public void save(int id, String filePath, String remoteUrl) {
-    Optional<BlogConfig> configOpt = repository.findByFilePath(filePath);
-    if (configOpt.isPresent() && configOpt.get().getId() != id) {
-      throw new ResExistedException(filePath.concat("已经存在"));
+    @Override
+    public BlogConfig findByBlogPath(String blogPath) {
+        return repository.findByFilePath(blogPath).orElse(null);
     }
-    BlogConfig config = repository.findById(id).orElse(new BlogConfig());
-    config.setId(id);
-    config.setFilePath(filePath);
-    config.setRemoteUrl(remoteUrl);
-    repository.save(config);
-  }
 
-  @Transactional(rollbackFor = Exception.class)
-  @Override
-  public void initBlog(int id) {
-    BlogConfig config = repository.findById(id).orElseThrow(NoSuchResException::new);
-    String filePath = config.getFilePath();
-    File file = new File(filePath);
-    if (!file.exists()) {
-      throw new NoSuchResException(filePath.concat("不存在,请检查博客路径."));
+    @Override
+    public void save(BlogConfig blogConfig) {
+        Optional<BlogConfig> configOpt = repository.findByFilePath(blogConfig.getFilePath());
+        if (configOpt.isPresent() && configOpt.get().getId() != blogConfig.getId()) {
+            throw new ResExistedException(blogConfig.getFilePath().concat("已经存在"));
+        }
+        BlogConfig config = repository.findById(blogConfig.getId()).orElse(blogConfig);
+        config.setFilePath(blogConfig.getFilePath());
+        config.setRemoteUrl(blogConfig.getRemoteUrl());
+        config.setSourcePath(blogConfig.getSourcePath());
+        repository.save(config);
     }
-    config.setRemoteUrl(initGitRemoteUrl(filePath));
-    config.setSourceRemoteUrl(initGitRemoteUrl(config.getSourcePath()));
-    config.setInitialized(true);
-    config.setName(filePath.substring(filePath.lastIndexOf("/") + 1));
-  }
 
-  @Override
-  public List<MenuVO> menus() {
-    List<BlogConfig> configs = repository.findAll();
-    return configs.stream()
-        .map(
-            config -> {
-              MenuVO vo = new MenuVO();
-              vo.setName(config.getName());
-              vo.setUrl("#");
-              if (StringUtils.isNotBlank(config.getSourcePath())) {
-                vo.addChild(new MenuVO("源文件", "/blog/" + config.getId() +"/source"));
-              }
-              vo.addChild(new MenuVO("博客配置", "/blog/" + config.getId() + "/config"));
-              File file = new File(config.getFilePath() + "/themes");
-              File[] files = file.listFiles();
-              if (ArrayUtils.isEmpty(files)) {
+    @Override
+    public List<BlogConfig> findAll() {
+        return repository.findAll();
+    }
+
+    @Override
+    public void save(int id, String filePath, String remoteUrl) {
+        Optional<BlogConfig> configOpt = repository.findByFilePath(filePath);
+        if (configOpt.isPresent() && configOpt.get().getId() != id) {
+            throw new ResExistedException(filePath.concat("已经存在"));
+        }
+        BlogConfig config = repository.findById(id).orElse(new BlogConfig());
+        config.setId(id);
+        config.setFilePath(filePath);
+        config.setRemoteUrl(remoteUrl);
+        repository.save(config);
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public void initBlog(int id) {
+        BlogConfig config = repository.findById(id).orElseThrow(NoSuchResException::new);
+        String filePath = config.getFilePath();
+        File file = new File(filePath);
+        if (!file.exists()) {
+            throw new NoSuchResException(filePath.concat("不存在,请检查博客路径."));
+        }
+        config.setRemoteUrl(initGitRemoteUrl(filePath));
+        config.setSourceRemoteUrl(initGitRemoteUrl(config.getSourcePath()));
+        config.setInitialized(true);
+        config.setName(filePath.substring(filePath.lastIndexOf("/") + 1));
+    }
+
+    @Override
+    public List<MenuVO> menus() {
+        List<BlogConfig> configs = repository.findAll();
+        return configs.stream().map(config -> {
+            MenuVO vo = new MenuVO();
+            vo.setName(config.getName());
+            vo.setUrl("#");
+            if (StringUtils.isNotBlank(config.getSourcePath())) {
+                vo.addChild(new MenuVO("源文件", "/blog/" + config.getId() + "/source"));
+            }
+            vo.addChild(new MenuVO("博客配置", "/blog/" + config.getId() + "/config"));
+            File file = new File(config.getFilePath() + "/themes");
+            File[] files = file.listFiles();
+            if (ArrayUtils.isEmpty(files)) {
                 return vo;
-              }
-              assert files != null;
-              Arrays.stream(files)
-                  .filter(theme -> !theme.isHidden() && theme.isDirectory())
-                  .forEach(
-                      theme -> {
-                        MenuVO themeMenu =
-                            new MenuVO(theme.getName().replace("hexo-theme-", ""), "#");
+            }
+            assert files != null;
+            Arrays.stream(files).filter(theme -> !theme.isHidden() && theme.isDirectory()).forEach(
+                    theme -> {
+                        MenuVO themeMenu = new MenuVO(theme.getName().replace("hexo-theme-", ""), "#");
                         vo.addChild(themeMenu);
-                        themeMenu.addChild(
-                            new MenuVO("文章管理", "/blog/" + theme.getName() + "/post"));
-                        themeMenu.addChild(
-                            new MenuVO("数据中心", "/blog/" + theme.getName() + "/data"));
-                        themeMenu.addChild(
-                            new MenuVO("主题配置", "/blog/" + theme.getName() + "/config"));
-                      });
-              return vo;
-            })
-        .collect(Collectors.toList());
-  }
+                        themeMenu.addChild(new MenuVO("文章管理", "/blog/" + theme.getName() + "/post"));
+                        themeMenu.addChild(new MenuVO("数据中心", "/blog/" + theme.getName() + "/data"));
+                        themeMenu.addChild(new MenuVO("主题配置", "/blog/" + theme.getName() + "/config"));
+                    });
+            return vo;
+        }).collect(Collectors.toList());
+    }
 
     @Override
     public BlogConfig findById(int id) {
@@ -125,15 +118,15 @@ public class BlogConfigServiceImpl implements BlogConfigService {
     }
 
     private String initGitRemoteUrl(String filePath) {
-    try {
-      File file = ResourceUtils.getFile("classpath:script/git-remote.sh");
-      List<String> execRes = ShellUtil.execRes(file, filePath);
-      if (execRes.isEmpty()) {
-        return null;
-      }
-      return execRes.get(0).split("\\s")[1];
-    } catch (IOException e) {
-      throw new NoSuchResException(filePath + "不存在,请检查配置.");
+        try {
+            File file = ResourceUtils.getFile("classpath:script/git-remote.sh");
+            List<String> execRes = ShellUtil.execRes(file, filePath);
+            if (execRes.isEmpty()) {
+                return null;
+            }
+            return execRes.get(0).split("\\s")[1];
+        } catch (IOException e) {
+            throw new NoSuchResException(filePath + "不存在,请检查配置.");
+        }
     }
-  }
 }

@@ -11,6 +11,7 @@ import java.util.List;
 public interface BlogConfigService {
     /**
      * 根据博客路径查询
+     *
      * @param blogPath 博客路径
      * @return 博客配置
      */
@@ -18,6 +19,7 @@ public interface BlogConfigService {
 
     /**
      * 保存新的博客
+     *
      * @param blogConfig 博客路径
      */
     void save(BlogConfig blogConfig);

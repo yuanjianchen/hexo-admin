@@ -11,7 +11,7 @@ import java.util.Collections;
 @Controller
 public class HomeController {
 
-    public static void test(){
+    public static void test() {
         if (!Collections.emptyList().isEmpty()) {
             System.out.println(1);
         }
