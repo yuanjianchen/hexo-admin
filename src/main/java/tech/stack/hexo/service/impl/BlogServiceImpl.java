@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import tech.stack.hexo.core.exception.AdminException;
 import tech.stack.hexo.core.exception.NoSuchResException;
 import tech.stack.hexo.domain.BlogConfig;
+import tech.stack.hexo.model.ao.FileSourceAO;
 import tech.stack.hexo.model.vo.FileTreeVO;
 import tech.stack.hexo.service.BlogConfigService;
 import tech.stack.hexo.service.BlogService;
@@ -66,6 +67,11 @@ public class BlogServiceImpl implements BlogService {
         } catch (Exception e) {
             throw new AdminException(e);
         }
+    }
+
+    @Override
+    public void saveFile(FileSourceAO fileSource) {
+
     }
 
     private List<FileTreeVO> listPosts(File file) {

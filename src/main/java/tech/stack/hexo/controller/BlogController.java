@@ -2,6 +2,7 @@ package tech.stack.hexo.controller;
 
 import org.springframework.web.bind.annotation.*;
 import tech.stack.hexo.model.Result;
+import tech.stack.hexo.model.ao.FileSourceAO;
 import tech.stack.hexo.model.vo.FileTreeVO;
 import tech.stack.hexo.service.BlogService;
 
@@ -29,5 +30,11 @@ public class BlogController {
     @GetMapping("{id}/source/post")
     public Result<String> fileContent(@PathVariable int id, @RequestParam String fileName) {
         return Result.ok(blogService.getFileContent(id, fileName));
+    }
+
+    @PostMapping("{id}/source/post")
+    public Result<Void> save(@PathVariable int id, @RequestBody FileSourceAO fileSource) {
+        blogService.saveFile(fileSource);
+        return Result.ok();
     }
 }

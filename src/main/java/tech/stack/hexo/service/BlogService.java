@@ -1,5 +1,6 @@
 package tech.stack.hexo.service;
 
+import tech.stack.hexo.model.ao.FileSourceAO;
 import tech.stack.hexo.model.vo.FileTreeVO;
 
 import java.util.List;
@@ -13,4 +14,5 @@ public interface BlogService {
 
     String getFileContent(int id, String fileName);
 
+    void saveFile(FileSourceAO fileSource);
 }

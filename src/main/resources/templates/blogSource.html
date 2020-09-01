@@ -5,7 +5,9 @@
     <title>文章源文件管理</title>
     <link rel="stylesheet" th:include="component/head::head"/>
     <link href="/plugins/jsTree/style.min.css" rel="stylesheet">
-    <link href="/plugins/editor/css/editormd.css" rel="stylesheet">
+    <!--    <link href="/plugins/editor/css/editormd.css" rel="stylesheet">-->
+    <link href="/plugins/vditor/dist/index.css" rel="stylesheet">
+<!--    <link href="/css/sspai.css" rel="stylesheet">-->
     <style type="text/css">
         .text-center {
             text-align: unset;
@@ -42,6 +44,19 @@
             background: grey;
         }
 
+        #editor {
+            height: 100%;
+            border: none;
+        }
+
+        .vditor-toolbar {
+            /*border: none;*/
+        }
+
+        #editor pre {
+            border: none;
+            background-color: #ffffff;
+        }
 
         .wrapper, .ibox, .ibox-content, .row, .fileTree, .editor {
             height: 100%;
@@ -62,9 +77,10 @@
         }
 
         .w98 {
-            width: 98%;
+            width: 97%;
         }
-        .-r20{
+
+        .-r20 {
             right: -20px;
         }
     </style>
@@ -79,7 +95,7 @@
                     <i class="tree-co fa fa-caret-left"></i>
                 </div>
                 <div class="col-sm-9 editor">
-                    <div id="editormd"></div>
+                    <div id="editor"></div>
                 </div>
             </div>
         </div>
@@ -87,10 +103,12 @@
 </div>
 <div th:include="component/head::script"/>
 <script src="/plugins/jsTree/jstree.min.js"></script>
-<script src="/plugins/editor/editormd.js"></script>
+<!--<script src="/plugins/editor/editormd.js"></script>-->
+<script src="/plugins/vditor/dist/index.min.js"></script>
 <script type="text/javascript">
     $(function () {
         const blogId = $('#treeFile').attr('value')
+        let filename = '';
         $.get("/blog/" + blogId + "/source/posts", function (res) {
             if (res.success) {
                 $('#treeFile').jstree({
@@ -106,11 +124,9 @@
             if (!data.node.children.length > 0) {
                 let path = $('#treeFile').jstree('get_path', data.selected, '/')
                 $.get('/blog/' + blogId + "/source/post?fileName=" + path, function (res) {
-                    console.log(res.data)
-                    editor.clear()
-                    editor.appendMarkdown(res.data)
+                    $editor.setValue(res.data)
+                    filename = path
                 })
-                console.log(path)
                 return
             }
             if (data.node.state.opened) {
@@ -121,56 +137,32 @@
                 $('#' + data.node.a_attr.id).find('i').addClass('fa-folder-o')
             }
         });
-        let editor = editormd('editormd', {
-            width: "100%",
-            // height: "100vh",
-            path: '/plugins/editor/lib/',
-            theme: "default",
-            // previewTheme: "",
-            // editorTheme: "",
-            markdown: '',
-            codeFold: true,
-            //syncScrolling : false,
-            saveHTMLToTextarea: true,    // 保存 HTML 到 Textarea
-            searchReplace: true,
-            // watch: false,                // 关闭实时预览
-            htmlDecode: "style,script,iframe|on*",            // 开启 HTML 标签解析，为了安全性，默认不开启
-            //toolbar  : false,             //关闭工具栏
-            //previewCodeHighlight : false, // 关闭预览 HTML 的代码块高亮，默认开启
-            emoji: true,
-            atLink: false,
-            taskList: true,
-            tocm: true,         // Using [TOCM]
-            tex: true,                   // 开启科学公式TeX语言支持，默认关闭
-            flowChart: true,             // 开启流程图支持，默认关闭
-            sequenceDiagram: true,       // 开启时序/序列图支持，默认关闭,
-            //dialogLockScreen : false,   // 设置弹出层对话框不锁屏，全局通用，默认为true
-            //dialogShowMask : false,     // 设置弹出层对话框显示透明遮罩层，全局通用，默认为true
-            //dialogDraggable : false,    // 设置弹出层对话框不可拖动，全局通用，默认为true
-            //dialogMaskOpacity : 0.4,    // 设置透明遮罩层的透明度，全局通用，默认值为0.1
-            //dialogMaskBgColor : "#000", // 设置透明遮罩层的背景颜色，全局通用，默认为#fff
-            imageUpload: true,
-            imageFormats: ["jpg", "jpeg", "gif", "png", "bmp", "webp"],
-            imageUploadURL: "./php/upload.php",
-            onload: function () {
-                // console.log('onload', this);
-                //this.fullscreen();
-                //this.unwatch();
-                //this.watch().fullscreen();
-
-                //this.setMarkdown("#PHP");
-                //this.width("100%");
-                //this.height(480);
-                //this.resize("100%", 640);
+        const $editor = new Vditor('editor', {
+            // height: '100%',
+            cdn: 'http://localhost:8080/plugins/vditor',
+            typewriterMode: true,
+            input: function(value){
+                $.post("")
+                console.log(value)
+            },
+            preview:{
+                theme:{
+                    current: 'sspai',
+                    path:'/plugins/vditor/dist/css/content-theme'
+                }
+            },
+            hint:{
+                emojiPath: '/plugins/vditor/dist/images/emoji'
             }
         })
+
         $('.tree-co').click(function () {
             $(this).parent('.fileTree').toggleClass('w1')
             $('#treeFile').toggleClass('hidden')
             $('.editor').toggleClass('w98')
             $(this).toggleClass('fa-caret-right')
-            editor.width('100%')
-            editor.height('100%')
+            // editor.width('100%')
+            // editor.height('100%')
         })
     })
 </script>
