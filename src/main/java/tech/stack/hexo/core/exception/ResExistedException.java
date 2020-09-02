@@ -9,7 +9,7 @@ public class ResExistedException extends AdminException {
         super("resource has existed.");
     }
 
-    public ResExistedException(String message) {
-        super(message);
+    public ResExistedException(String exist) {
+        super(String.format("[%s]已经存在!", exist));
     }
 }

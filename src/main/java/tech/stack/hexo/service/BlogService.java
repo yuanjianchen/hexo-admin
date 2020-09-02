@@ -14,5 +14,5 @@ public interface BlogService {
 
     String getFileContent(int id, String fileName);
 
-    void saveFile(FileSourceAO fileSource);
+    void saveFile(int id, FileSourceAO fileSource);
 }

@@ -7,7 +7,7 @@
     <link href="/plugins/jsTree/style.min.css" rel="stylesheet">
     <!--    <link href="/plugins/editor/css/editormd.css" rel="stylesheet">-->
     <link href="/plugins/vditor/dist/index.css" rel="stylesheet">
-<!--    <link href="/css/sspai.css" rel="stylesheet">-->
+    <!--    <link href="/css/sspai.css" rel="stylesheet">-->
     <style type="text/css">
         .text-center {
             text-align: unset;
@@ -91,7 +91,7 @@
         <div class="ibox-content text-center p-md">
             <div class="row">
                 <div class="col-sm-3 fileTree">
-                    <div id="treeFile" th:value="${configId}" class="test"></div>
+                    <div id="treeFile" class="test"></div>
                     <i class="tree-co fa fa-caret-left"></i>
                 </div>
                 <div class="col-sm-9 editor">
@@ -108,7 +108,7 @@
 <script type="text/javascript">
     $(function () {
         const blogId = $('#treeFile').attr('value')
-        let filename = '';
+        let filename = window.localStorage.getItem("md_filename");
         $.get("/blog/" + blogId + "/source/posts", function (res) {
             if (res.success) {
                 $('#treeFile').jstree({
@@ -126,6 +126,7 @@
                 $.get('/blog/' + blogId + "/source/post?fileName=" + path, function (res) {
                     $editor.setValue(res.data)
                     filename = path
+                    window.localStorage.setItem("md_filename", path)
                 })
                 return
             }
@@ -139,19 +140,24 @@
         });
         const $editor = new Vditor('editor', {
             // height: '100%',
-            cdn: 'http://localhost:8080/plugins/vditor',
+            cdn: '/plugins/vditor',
             typewriterMode: true,
-            input: function(value){
-                $.post("")
-                console.log(value)
+            input: function (value) {
+                let data = {
+                    'filename': filename,
+                    'md': value
+                }
+                $.post("/blog/" + blogId + "/source/post", data, function (res) {
+                    // console.log(res)
+                })
             },
-            preview:{
-                theme:{
+            preview: {
+                theme: {
                     current: 'sspai',
-                    path:'/plugins/vditor/dist/css/content-theme'
+                    path: '/plugins/vditor/dist/css/content-theme'
                 }
             },
-            hint:{
+            hint: {
                 emojiPath: '/plugins/vditor/dist/images/emoji'
             }
         })
@@ -161,8 +167,6 @@
             $('#treeFile').toggleClass('hidden')
             $('.editor').toggleClass('w98')
             $(this).toggleClass('fa-caret-right')
-            // editor.width('100%')
-            // editor.height('100%')
         })
     })
 </script>

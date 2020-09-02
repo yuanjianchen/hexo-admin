@@ -14,17 +14,16 @@ function formJson(formId) {
 function disableForm(formId) {
     let inputs = $("#" + formId).find('input')
     inputs.each(function (i) {
-        $input = $(this)
-        if ($input.val()) {
-            $input.attr("disabled", '')
-        }
+        $(this).attr("disabled", '')
     })
 }
 
 function enableForm(formId) {
     let inputs = $("#" + formId).find('input')
     inputs.each(function (i) {
-        $(this).removeAttr("disabled");
+        if ($(this).attr("disabled"))
+            $(this).removeAttr("disabled");
     })
+
 }
 

@@ -1,5 +1,6 @@
 package tech.stack.hexo.service.impl;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.stereotype.Service;
 import tech.stack.hexo.core.exception.AdminException;
@@ -11,9 +12,8 @@ import tech.stack.hexo.service.BlogConfigService;
 import tech.stack.hexo.service.BlogService;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -56,22 +56,24 @@ public class BlogServiceImpl implements BlogService {
         if (!file.exists()) {
             throw new NoSuchResException(fileName + " 文件不存在.");
         }
-
-        try (Reader reader = new InputStreamReader(new FileInputStream(file))) {
-            StringBuilder sb = new StringBuilder();
-            char[] temp = new char[30];
-            while (reader.read(temp) != -1) {
-                sb.append(temp);
-            }
-            return sb.toString();
-        } catch (Exception e) {
+        try {
+            return FileUtils.readFileToString(file, StandardCharsets.UTF_8);
+        } catch (IOException e) {
             throw new AdminException(e);
         }
     }
 
     @Override
-    public void saveFile(FileSourceAO fileSource) {
-
+    public void saveFile(int id, FileSourceAO fileSource) {
+        BlogConfig config = blogConfigService.findById(id);
+        String sourcePath = config.getSourcePath();
+        String filePath = sourcePath.substring(0, sourcePath.lastIndexOf("/") + 1).concat(fileSource.getFilename());
+        File file = new File(filePath);
+        try {
+            FileUtils.write(file, fileSource.getMd(), StandardCharsets.UTF_8);
+        } catch (IOException e) {
+            throw new AdminException(e);
+        }
     }
 
     private List<FileTreeVO> listPosts(File file) {

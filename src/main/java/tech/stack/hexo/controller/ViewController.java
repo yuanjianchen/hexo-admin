@@ -3,7 +3,6 @@ package tech.stack.hexo.controller;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import tech.stack.hexo.service.PageInitService;
 
 /**
@@ -40,9 +39,8 @@ public class ViewController {
         return "articleManager";
     }
 
-    @GetMapping("blog/{id}/source")
-    public String blogSource(@PathVariable int id, Model model) {
-        model.addAttribute("configId", id);
-        return "blogSource";
+    @GetMapping("/source/article")
+    public String blogSource() {
+        return "mdSource";
     }
 }

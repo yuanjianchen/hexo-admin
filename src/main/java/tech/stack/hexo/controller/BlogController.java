@@ -33,8 +33,8 @@ public class BlogController {
     }
 
     @PostMapping("{id}/source/post")
-    public Result<Void> save(@PathVariable int id, @RequestBody FileSourceAO fileSource) {
-        blogService.saveFile(fileSource);
+    public Result<Void> save(@PathVariable int id, FileSourceAO fileSource) {
+        blogService.saveFile(id, fileSource);
         return Result.ok();
     }
 }

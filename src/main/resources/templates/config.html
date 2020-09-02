@@ -9,66 +9,123 @@
 <div class="wrapper wrapper-content animated fadeInRight">
     <div class="ibox float-e-margins">
         <div class="ibox-title">
-            <h5 th:text="${blogConfig.name}">已有博客 <small></small></h5>
+            <h5>文章源文件 <small></small></h5>
             <div class="ibox-tools">
+                <a class="add-link">
+                    <i class="fa fa-plus"></i>
+                </a>
+                <a class="refresh-link" onclick="initArticles()">
+                    <i class="fa fa-refresh"></i>
+                </a>
                 <a class="collapse-link">
                     <i class="fa fa-chevron-up"></i>
                 </a>
             </div>
         </div>
-        <div class="ibox-content">
-            <!--/*@thymesVar id="blogConfig" type="tech.stack.hexo.domain.BlogConfig"*/-->
-            <form class="form-horizontal" th:object="${blogConfig}" id="blogConfig">
-                <input type="hidden" th:field="*{id}">
-                <div class="form-group">
-                    <label class="col-sm-1 control-label">路径配置：</label>
-                    <div class="col-sm-11">
-                        <input th:field="*{filePath}" type="text"
-                               placeholder="请填写已有博客路径" class="form-control">
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="col-sm-1 control-label">远程仓库：</label>
-                    <div class="col-sm-11">
-                        <input th:field="*{remoteUrl}" type="text" placeholder="请填写远程仓库地址"
-                               class="form-control">
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="col-sm-1 control-label">博文路径：</label>
-                    <div class="col-sm-11">
-                        <input th:field="*{sourcePath}" type="text" placeholder="博文路径,不填将使用默认路径"
-                               class="form-control">
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="col-sm-1 control-label">博文仓库：</label>
-                    <div class="col-sm-11">
-                        <input th:field="*{sourceRemoteUrl}" type="text" placeholder="博文路径,不填将使用默认路径"
-                               class="form-control">
-                    </div>
-                </div>
-                <div class="form-group">
-                    <div class="col-sm-12">
-                        <button class="btn btn-sm btn-info" type="button" onclick="enableForm('blogConfig')">编辑</button>
-                        <button class="btn btn-sm btn-danger" type="button" id="save">保存</button>
-                        <button class="btn btn-sm btn-primary" type="button" id="initBlog"
-                                th:text="*{initialized}?'更新':'初始化'">初始化
-                        </button>
-                    </div>
-                </div>
-            </form>
+        <div class="ibox-content" id="article-source">
+            <!--            <form class="form-horizontal" id="article-from-1">-->
+            <!--                <input type="hidden" id="article-1">-->
+            <!--                <div class="form-group">-->
+            <!--                    <label class="col-sm-1 control-label">路径配置：</label>-->
+            <!--                    <div class="col-sm-11">-->
+            <!--                        <input type="text"-->
+            <!--                               placeholder="请填写已有博客路径" class="form-control">-->
+            <!--                    </div>-->
+            <!--                </div>-->
+            <!--                <div class="form-group">-->
+            <!--                    <label class="col-sm-1 control-label">远程仓库：</label>-->
+            <!--                    <div class="col-sm-11">-->
+            <!--                        <input type="text" placeholder="请填写远程仓库地址"-->
+            <!--                               class="form-control">-->
+            <!--                    </div>-->
+            <!--                </div>-->
+            <!--                <div class="form-group">-->
+            <!--                    <div class="col-sm-12 col-xs-offset-1">-->
+            <!--                        <button class="btn btn-sm btn-info" type="button" onclick="enableForm('blogConfig')">编辑</button>-->
+            <!--                        <button class="btn btn-sm btn-danger" type="button" id="save">保存</button>-->
+            <!--                    </div>-->
+            <!--                </div>-->
+            <!--            </form>-->
         </div>
     </div>
 </div>
 <div th:include="component/head::script"/>
 <!-- 自定义js -->
-<script src="js/content.js?v=1.0.0"></script>
 <script type="text/javascript">
 
+    function addArticleForm(index, data) {
+
+        let html = '';
+        if (index > 0) {
+            html += '<hr>'
+        }
+        let disabled = ''
+        if (data) {
+            disabled = 'disabled'
+        }
+        data = data || {
+            'filePath': '',
+            'id': 0,
+            'remoteUrl': '',
+        }
+        html += '<form class="form-horizontal" id="article-from-' + index + '">' +
+            '                <input type="hidden" name="id" value="' + data.id + '">' +
+            '                <input type="hidden" name="type" value="ARTICLE">' +
+            '                <div class="form-group">' +
+            '                    <label class="col-sm-1 control-label">路径配置：</label>' +
+            '                    <div class="col-sm-11">' +
+            '                        <input type="text" name="filePath"  value="' + data.filePath + '" ' + disabled + ' placeholder="请填写已有博客路径" class="form-control">' +
+            '                    </div>' +
+            '                </div>' +
+            '                <div class="form-group">' +
+            '                    <label class="col-sm-1 control-label">远程仓库：</label>' +
+            '                    <div class="col-sm-11">' +
+            '                        <input type="text" name="remoteUrl" value="' + data.remoteUrl + '" ' + disabled + ' placeholder="请填写远程仓库地址" class="form-control">' +
+            '                    </div>' +
+            '                </div>' +
+            '                <div class="form-group">' +
+            '                    <div class="col-sm-12 col-xs-offset-1">' +
+            '                        <button class="btn btn-sm btn-info" type="button" onclick="enableForm(\'article-from-' + index + '\')">编辑</button>' +
+            '                        <button class="btn btn-sm btn-danger" type="button" onclick="saveArticle(\'article-from-' + index + '\')">保存</button>' +
+            '                    </div>' +
+            '                </div>' +
+            '            </form>'
+        $("#article-source").append(html)
+    }
+
+    function initArticles() {
+        $.get("/source/articles", function (res) {
+            let articles = res.data
+            $("#article-source").empty()
+            if (articles.length > 0) {
+                $.each(articles, function (i, article) {
+                    addArticleForm(i, article)
+                })
+            } else {
+                addArticleForm(0)
+            }
+        })
+    }
+
+    function saveArticle(formId) {
+        $.ajax({
+            url: '/source/save',
+            type: 'POST',
+            data: formJson(formId),
+            dataType: 'json',
+            contentType: 'application/json',
+            success: function (res) {
+                layer.msg(res.message)
+                if (res.success) {
+                    disableForm(formId)
+                }
+            }
+        })
+    }
 
     $(document).ready(function () {
-        disableForm('blogConfig')
+        initArticles()
+
         $("#save").click(function () {
             let $filePath = $("#filePath");
             if ($filePath.attr("disabled")) {
@@ -92,6 +149,11 @@
                     }
                 }
             })
+        })
+        $('.add-link').click(function () {
+            let lastArticleForm = $("#article-source form:last-child")[0]
+            let index = parseInt($(lastArticleForm).attr('id').substring(13)) + 1
+            addArticleForm(index)
         })
         $("#initBlog").click(function () {
             let id = $("#id").val()
