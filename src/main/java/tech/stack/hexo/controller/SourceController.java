@@ -6,9 +6,8 @@ import org.springframework.web.bind.annotation.*;
 import tech.stack.hexo.model.Result;
 import tech.stack.hexo.model.ao.FileSourceAO;
 import tech.stack.hexo.model.ao.SourceAO;
-import tech.stack.hexo.model.vo.FileTreeVO;
+import tech.stack.hexo.model.vo.FileTree;
 import tech.stack.hexo.model.vo.SourceVO;
-import tech.stack.hexo.service.BlogService;
 import tech.stack.hexo.service.SourceService;
 
 import java.util.List;
@@ -28,24 +27,29 @@ public class SourceController {
         return Result.ok(sourceService.save(source));
     }
 
-    @GetMapping("/articles")
+    @GetMapping("/article/config")
     public Result<List<SourceVO>> listArticleSource() {
         return Result.ok(sourceService.listArticleSource());
     }
 
-    @GetMapping("/source/posts")
-    public Result<List<FileTreeVO>> files() {
-        return Result.ok(sourceService.listPosts());
+    @GetMapping("/articles")
+    public Result<List<FileTree>> files() {
+        return Result.ok(sourceService.listArticles());
     }
 
-    @GetMapping("/source/{id}/post")
-    public Result<String> fileContent(@PathVariable int id, @RequestParam String fileName) {
-        return Result.ok(sourceService.getFileContent(id, fileName));
+    @GetMapping("/article")
+    public Result<String> fileContent(@RequestParam String fileName) {
+        return Result.ok(sourceService.getFileContent(fileName));
     }
 
-    @PostMapping("/source/{id}/post")
-    public Result<Void> save(@PathVariable int id, FileSourceAO fileSource) {
-        sourceService.saveFile(id, fileSource);
+    @PostMapping("/init/folder")
+    public Result<FileTree> initFolder(String parentPath){
+        return Result.ok(sourceService.initFolder(parentPath));
+    }
+
+    @PostMapping("/article")
+    public Result<Void> save(FileSourceAO fileSource) {
+        sourceService.saveFile(fileSource);
         return Result.ok();
     }
 }

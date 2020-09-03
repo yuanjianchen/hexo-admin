@@ -39,7 +39,7 @@ public class ViewController {
         return "articleManager";
     }
 
-    @GetMapping("/source/article")
+    @GetMapping("/source/md")
     public String blogSource() {
         return "mdSource";
     }

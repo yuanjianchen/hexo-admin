@@ -1,9 +1,8 @@
 package tech.stack.hexo.service;
 
-import tech.stack.hexo.domain.Source;
 import tech.stack.hexo.model.ao.FileSourceAO;
 import tech.stack.hexo.model.ao.SourceAO;
-import tech.stack.hexo.model.vo.FileTreeVO;
+import tech.stack.hexo.model.vo.FileTree;
 import tech.stack.hexo.model.vo.SourceVO;
 
 import java.util.List;
@@ -19,9 +18,11 @@ public interface SourceService {
 
     List<SourceVO> listArticleSource();
 
-    List<FileTreeVO> listPosts();
+    List<FileTree> listArticles();
 
-    String getFileContent(int id, String fileName);
+    String getFileContent(String fileName);
 
-    void saveFile(int id, FileSourceAO fileSource);
+    void saveFile(FileSourceAO fileSource);
+
+    FileTree initFolder(String parentPath);
 }

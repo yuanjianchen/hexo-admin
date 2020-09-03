@@ -75,7 +75,7 @@ public class BlogConfigServiceImpl implements BlogConfigService {
         String filePath = config.getFilePath();
         File file = new File(filePath);
         if (!file.exists()) {
-            throw new NoSuchResException(filePath.concat("不存在,请检查博客路径."));
+            throw new NoSuchResException(filePath);
         }
         config.setRemoteUrl(initGitRemoteUrl(filePath));
         config.setSourceRemoteUrl(initGitRemoteUrl(config.getSourcePath()));
@@ -126,7 +126,7 @@ public class BlogConfigServiceImpl implements BlogConfigService {
             }
             return execRes.get(0).split("\\s")[1];
         } catch (IOException e) {
-            throw new NoSuchResException(filePath + "不存在,请检查配置.");
+            throw new NoSuchResException(filePath);
         }
     }
 }

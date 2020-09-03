@@ -1,18 +1,24 @@
 package tech.stack.hexo.service.impl;
 
+import org.apache.commons.io.FileUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import tech.stack.hexo.core.constant.SourceType;
+import tech.stack.hexo.core.exception.AdminException;
 import tech.stack.hexo.core.exception.NoSuchResException;
 import tech.stack.hexo.core.exception.ResExistedException;
 import tech.stack.hexo.domain.Source;
 import tech.stack.hexo.model.ao.FileSourceAO;
 import tech.stack.hexo.model.ao.SourceAO;
-import tech.stack.hexo.model.vo.FileTreeVO;
+import tech.stack.hexo.model.vo.FileTree;
 import tech.stack.hexo.model.vo.SourceVO;
 import tech.stack.hexo.repository.SourceRepository;
 import tech.stack.hexo.service.SourceService;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -55,19 +61,49 @@ public class SourceServiceImpl implements SourceService {
     }
 
     @Override
-    public List<FileTreeVO> listPosts() {
-
-        return null;
+    public List<FileTree> listArticles() {
+        List<FileTree> trees = sourceRepository.findByType(SourceType.ARTICLE).stream()
+                .map(source -> FileTree.makeTree(new File(source.getFilePath()))).collect(Collectors.toList());
+        if (trees.size() == 1) {
+            trees.get(0).open();
+        }
+        return trees;
     }
 
     @Override
-    public String getFileContent(int id, String fileName) {
-        return null;
+    public String getFileContent(String fileName) {
+        File file = new File(fileName);
+        if (!file.exists()) {
+            throw new NoSuchResException(fileName);
+        }
+        try {
+            return FileUtils.readFileToString(file, StandardCharsets.UTF_8);
+        } catch (IOException e) {
+            throw new AdminException(e);
+        }
     }
 
     @Override
-    public void saveFile(int id, FileSourceAO fileSource) {
+    public void saveFile(FileSourceAO fileSource) {
+        File file = new File(fileSource.getFilename());
+        try {
+            FileUtils.writeStringToFile(file, fileSource.getMd(), Charset.defaultCharset());
+        } catch (IOException e) {
+            throw new AdminException(e);
+        }
+    }
 
+    @Override
+    public FileTree initFolder(String parentPath) {
+        String filePath = parentPath + "/" + FileTree.DEFAULT_FOLDER_NAME;
+        File file = new File(filePath);
+        if (file.exists()) {
+            throw new ResExistedException(filePath);
+        }
+        boolean mkdir = file.mkdir();
+        FileTree tree = new FileTree(file.getName());
+        tree.setFilePath(filePath);
+        return tree;
     }
 
     private Source get(Integer id) {

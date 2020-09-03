@@ -9,7 +9,7 @@ public class NoSuchResException extends AdminException {
         super("resource not exist.");
     }
 
-    public NoSuchResException(String message) {
-        super(message);
+    public NoSuchResException(String res) {
+        super(String.format("资源 [%s] 不存在", res));
     }
 }

@@ -94,7 +94,7 @@
     }
 
     function initArticles() {
-        $.get("/source/articles", function (res) {
+        $.get("/source/article/config", function (res) {
             let articles = res.data
             $("#article-source").empty()
             if (articles.length > 0) {

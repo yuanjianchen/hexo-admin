@@ -83,6 +83,20 @@
         .-r20 {
             right: -20px;
         }
+
+        .vakata-context li > a {
+            padding: 0 1em 0 1em;
+        }
+
+        .vakata-context li > a > i {
+            width: 0 !important;
+            margin: 0;
+        }
+
+        .vakata-context li > a .vakata-contextmenu-sep {
+            border: none;
+            background: unset;
+        }
     </style>
 </head>
 <body class="gray-bg">
@@ -106,36 +120,96 @@
 <!--<script src="/plugins/editor/editormd.js"></script>-->
 <script src="/plugins/vditor/dist/index.min.js"></script>
 <script type="text/javascript">
+    function initFolder(parent){
+        $.post()
+    }
+
     $(function () {
-        const blogId = $('#treeFile').attr('value')
         let filename = window.localStorage.getItem("md_filename");
-        $.get("/blog/" + blogId + "/source/posts", function (res) {
+        $.get("/source/articles", function (res) {
             if (res.success) {
                 $('#treeFile').jstree({
                     'core': {
-                        'data': res.data
+                        'data': res.data,
+                        'check_callback': function (o, n, p, i, m) {
+                            return true;
+                        },
+                    },
+                    "plugins": ["contextmenu"],
+                    "contextmenu": {
+                        "items": function (node) {
+                            var items = {
+                                "newFolder": { // The "rename" menu item
+                                    "label": "新建文件夹",
+                                    "action": function (data) {
+                                        var inst = $.jstree.reference(data.reference),
+                                            obj = inst.get_node(data.reference);
+                                        console.log(obj)
+                                        let parent = obj;
+                                        if (obj.original.icon.indexOf('file') > 0) {
+                                            parent = inst.get_node(obj.parent)
+                                        }
+                                        inst.create_node(parent, {icon: "fa fa-folder-o", text: 'new Folder'}, "last", function (new_node) {
+                                            setTimeout(function () {
+                                                inst.edit(new_node, new_node.text, function () {
+                                                    console.log("aaa")
+                                                });
+                                            }, 0)
+
+                                        });
+                                    },
+
+                                },
+                                "newFile": {
+                                    "label": "新建文件",
+                                    "action": function (data) {
+                                        var inst = $.jstree.reference(data.reference),
+                                            obj = inst.get_node(data.reference);
+                                        let parent = obj;
+                                        if (obj.original.icon.indexOf('file') > 0) {
+                                            parent = inst.get_node(obj.parent)
+                                        }
+                                        inst.create_node(parent, {icon: "fa fa-file-o", text: 'new File'}, "last", function (new_node) {
+                                            setTimeout(function () {
+                                                inst.edit(new_node);
+                                            }, 0);
+
+                                        });
+                                    }
+                                },
+                                "renameItem": { // The "delete" menu item
+                                    "label": "重命名",
+                                    action: function (data) {
+                                        let inst = $.jstree.reference(data.reference),
+                                            obj = inst.get_node(data.reference);
+                                        inst.edit(obj);
+                                    }
+                                },
+                                "delete": { // The "delete" menu item
+                                    "label": "移除至回收站",
+                                    action: function (data) {
+                                        let inst = $.jstree.reference(data.reference),
+                                            obj = inst.get_node(data.reference);
+                                        inst.delete_node(obj);
+                                    }
+                                }
+                            };
+                            return items;
+                        }
                     }
                 });
             }
         })
 
-        $('#treeFile').on("select_node.jstree", function (e, data) {
-            $('#treeFile').jstree('toggle_node', data.selected)
+        $('#treeFile').on("changed.jstree", function (e, data) {
+            $('#treeFile').jstree('toggle_node', data.node)
             if (!data.node.children.length > 0) {
-                let path = $('#treeFile').jstree('get_path', data.selected, '/')
-                $.get('/blog/' + blogId + "/source/post?fileName=" + path, function (res) {
+                let path = data.node.original.filePath
+                $.get("/source/article?fileName=" + path, function (res) {
                     $editor.setValue(res.data)
                     filename = path
                     window.localStorage.setItem("md_filename", path)
                 })
-                return
-            }
-            if (data.node.state.opened) {
-                $('#' + data.node.a_attr.id).find('i').removeClass('fa-folder-o')
-                $('#' + data.node.a_attr.id).find('i').addClass('fa-folder-open-o')
-            } else {
-                $('#' + data.node.a_attr.id).find('i').removeClass('fa-folder-open-o')
-                $('#' + data.node.a_attr.id).find('i').addClass('fa-folder-o')
             }
         });
         const $editor = new Vditor('editor', {
@@ -147,7 +221,7 @@
                     'filename': filename,
                     'md': value
                 }
-                $.post("/blog/" + blogId + "/source/post", data, function (res) {
+                $.post("/source/article", data, function (res) {
                     // console.log(res)
                 })
             },
