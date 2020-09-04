@@ -120,7 +120,7 @@
 <!--<script src="/plugins/editor/editormd.js"></script>-->
 <script src="/plugins/vditor/dist/index.min.js"></script>
 <script type="text/javascript">
-    function initFolder(parent){
+    function initFolder(parent) {
         $.post()
     }
 
@@ -149,16 +149,27 @@
                                         if (obj.original.icon.indexOf('file') > 0) {
                                             parent = inst.get_node(obj.parent)
                                         }
-                                        inst.create_node(parent, {icon: "fa fa-folder-o", text: 'new Folder'}, "last", function (new_node) {
-                                            setTimeout(function () {
-                                                inst.edit(new_node, new_node.text, function () {
-                                                    console.log("aaa")
-                                                });
-                                            }, 0)
+                                        $.post("/source/init/folder", {'parentPath': parent.original.filePath}, function (res) {
+                                            if (!res.success) {
+                                                layer.msg(res.message)
+                                                return
+                                            }
+                                            inst.create_node(parent, res.data, "last", function (new_node) {
+                                                setTimeout(function () {
+                                                    let oldFilePath = new_node.original.filePath
+                                                    inst.edit(new_node, new_node.text, function () {
+                                                        $.post("/source/file/rename", {
+                                                            'oldFile': oldFilePath,
+                                                            'newFile': new_node.text
+                                                        }, function (res) {
+                                                            layer.msg(res.message)
+                                                        })
+                                                    });
+                                                }, 0)
 
-                                        });
+                                            });
+                                        })
                                     },
-
                                 },
                                 "newFile": {
                                     "label": "新建文件",
@@ -169,12 +180,26 @@
                                         if (obj.original.icon.indexOf('file') > 0) {
                                             parent = inst.get_node(obj.parent)
                                         }
-                                        inst.create_node(parent, {icon: "fa fa-file-o", text: 'new File'}, "last", function (new_node) {
-                                            setTimeout(function () {
-                                                inst.edit(new_node);
-                                            }, 0);
+                                        $.post("/source/init/file", {'parentPath': parent.original.filePath}, function (res) {
+                                            if (!res.success) {
+                                                layer.msg(res.message)
+                                                return
+                                            }
+                                            inst.create_node(parent, res.data, "last", function (new_node) {
+                                                setTimeout(function () {
+                                                    let oldFilePath = new_node.original.filePath
+                                                    inst.edit(new_node, new_node.text, function () {
+                                                        $.post("/source/file/rename", {
+                                                            'oldFile': oldFilePath,
+                                                            'newFile': new_node.text
+                                                        }, function (res) {
+                                                            layer.msg(res.message)
+                                                        })
+                                                    });
+                                                }, 0)
 
-                                        });
+                                            });
+                                        })
                                     }
                                 },
                                 "renameItem": { // The "delete" menu item
@@ -182,7 +207,15 @@
                                     action: function (data) {
                                         let inst = $.jstree.reference(data.reference),
                                             obj = inst.get_node(data.reference);
-                                        inst.edit(obj);
+                                        let oldFilePath = obj.original.filePath
+                                        inst.edit(obj, obj.text, function () {
+                                            $.post("/source/file/rename", {
+                                                'oldFile': oldFilePath,
+                                                'newFile': obj.text
+                                            }, function (res) {
+                                                layer.msg(res.message)
+                                            })
+                                        });
                                     }
                                 },
                                 "delete": { // The "delete" menu item
@@ -190,7 +223,12 @@
                                     action: function (data) {
                                         let inst = $.jstree.reference(data.reference),
                                             obj = inst.get_node(data.reference);
-                                        inst.delete_node(obj);
+                                        $.post("/source/file/trace", {"file": obj.original.filePath}, function (res) {
+                                            layer.msg(res.message)
+                                            if (res.success) {
+                                                inst.delete_node(obj);
+                                            }
+                                        })
                                     }
                                 }
                             };
@@ -203,10 +241,11 @@
 
         $('#treeFile').on("changed.jstree", function (e, data) {
             $('#treeFile').jstree('toggle_node', data.node)
-            if (!data.node.children.length > 0) {
+            if (data.node.icon.indexOf('file') > 0) {
                 let path = data.node.original.filePath
                 $.get("/source/article?fileName=" + path, function (res) {
-                    $editor.setValue(res.data)
+                    let md = res.data || ''
+                    $editor.setValue(md)
                     filename = path
                     window.localStorage.setItem("md_filename", path)
                 })

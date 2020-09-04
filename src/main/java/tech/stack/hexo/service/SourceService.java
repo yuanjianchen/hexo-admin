@@ -25,4 +25,8 @@ public interface SourceService {
     void saveFile(FileSourceAO fileSource);
 
     FileTree initFolder(String parentPath);
+
+    void renameFile(String oldFile, String newFile);
+
+    FileTree initFile(String parentPath);
 }

@@ -20,7 +20,7 @@ public class HexoAdminApplication {
             SpringApplication.run(HexoAdminApplication.class, args);
             App.flag = false;
         }).start();
-//        LauncherImpl.launchApplication(App.class, AppPreloader.class, args);
+        LauncherImpl.launchApplication(App.class, AppPreloader.class, args);
 
     }
 

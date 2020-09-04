@@ -19,9 +19,9 @@ import java.util.stream.Collectors;
  */
 @Data
 public class FileTree {
-    private static final String FOLDER_OPEN_ICON = "fa fa-folder-open-o";
-    private static final String FOLDER_ICON = "fa fa-folder-o";
-    private static final String FILE_ICON = "fa fa-file-o";
+    public static final String FOLDER_OPEN_ICON = "fa fa-folder-open-o";
+    public static final String FOLDER_ICON = "fa fa-folder-o";
+    public static final String FILE_ICON = "fa fa-file-o";
     public static final String DEFAULT_FOLDER_NAME = "new Folder";
     public static final String DEFAULT_FILE_NAME = "new File";
 

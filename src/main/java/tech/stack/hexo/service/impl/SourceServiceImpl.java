@@ -15,6 +15,7 @@ import tech.stack.hexo.model.vo.SourceVO;
 import tech.stack.hexo.repository.SourceRepository;
 import tech.stack.hexo.service.SourceService;
 
+import javax.swing.plaf.metal.MetalIconFactory;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -103,6 +104,36 @@ public class SourceServiceImpl implements SourceService {
         boolean mkdir = file.mkdir();
         FileTree tree = new FileTree(file.getName());
         tree.setFilePath(filePath);
+        tree.setIcon(FileTree.FOLDER_ICON);
+        return tree;
+    }
+
+    @Override
+    public void renameFile(String oldFile, String newFile) {
+        File file = new File(oldFile);
+        newFile = oldFile.substring(0, oldFile.lastIndexOf("/") + 1) + newFile;
+        File file1 = new File(newFile);
+        if(file1.exists()){
+            throw new ResExistedException(newFile);
+        }
+        file.renameTo(new File(newFile));
+    }
+
+    @Override
+    public FileTree initFile(String parentPath) {
+        String filePath = parentPath + "/" + FileTree.DEFAULT_FILE_NAME;
+        File file = new File(filePath);
+        if (file.exists()) {
+            throw new ResExistedException(filePath);
+        }
+        try {
+            file.createNewFile();
+        } catch (IOException e) {
+            throw new AdminException(e);
+        }
+        FileTree tree = new FileTree(file.getName());
+        tree.setFilePath(filePath);
+        tree.setIcon(FileTree.FILE_ICON);
         return tree;
     }
 
